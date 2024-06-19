@@ -5,7 +5,7 @@
 local M = {}
 M.plugins = "plugins"
 M.ui = {
-  theme = "ashes",
+  theme = "tomorrow_night",
 }
 
 return M

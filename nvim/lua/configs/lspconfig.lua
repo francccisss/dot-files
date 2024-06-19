@@ -4,7 +4,7 @@ local on_init = require("nvchad.configs.lspconfig").on_init
 local capabilities = require("nvchad.configs.lspconfig").capabilities
 
 local lspconfig = require "lspconfig"
-local servers = { "html", "cssls", "tsserver", "pyright" }
+local servers = { "html", "cssls", "tsserver", "pyright", "gopls" }
 
 -- lsps with default config
 for _, lsp in ipairs(servers) do
@@ -28,7 +28,6 @@ lspconfig.pyright.setup {
   settings = {
     python = {
       analysis = {
-        autoSearchPaths = true,
         diagnosticMode = "openFilesOnly",
         useLibraryCodeForTypes = true,
         autoImportCompletions = true,
@@ -38,18 +37,11 @@ lspconfig.pyright.setup {
   },
 }
 
--- lspconfig.pylsp.setup {
---   settings = {
---     pylsp = {
---       plugins = {
---         jedi_completion ={
---           fuzzy = true
---         },
---         pycodestyle = {
---           ignore = { "W391" },
---           maxLineLength = 100,
---         },
---       },
---     },
---   },
--- }
+lspconfig.gopls.setup {
+  cmd = {
+    "gopls"
+  },
+  filetypes = {
+    "go", "gomod", "gowork", "gotmpl"
+  }
+}
