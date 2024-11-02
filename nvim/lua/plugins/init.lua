@@ -27,6 +27,7 @@ return {
         "prettier",
         "typescript-language-server",
         "eslint-lsp",
+        "tailwindcss-language-server",
       },
     },
   },
