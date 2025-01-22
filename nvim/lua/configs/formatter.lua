@@ -11,6 +11,7 @@ local M = {
     },
     ["*"] = {
       require("formatter.filetypes.any").remove_trailing_whitespace,
+      require("formatter.filetypes.html").prettierd,
     },
   },
 }

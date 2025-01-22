@@ -1,7 +1,30 @@
 return {
   {
     "stevearc/conform.nvim",
-    event = 'BufWritePre', -- uncomment for format on save
+    -- event = 'BufWritePre', -- uncomment for format on save
+    opts = require "configs.conform",
+  },
+  -- These are some examples, uncomment them if you want to see them work!
+  {
+    "neovim/nvim-lspconfig",
+    config = function()
+      require "configs.lspconfig"
+    end,
+  },
+  {
+    "AckslD/nvim-neoclip.lua",
+    dependencies = {
+      -- you'll need at least one of these
+      { "nvim-telescope/telescope.nvim" },
+      { "ibhagwan/fzf-lua" },
+    },
+    config = function()
+      require("neoclip").setup()
+    end,
+  },
+  {
+    "stevearc/conform.nvim",
+    event = "BufWritePre", -- uncomment for format on save
     config = function()
       require "configs.conform"
     end,
