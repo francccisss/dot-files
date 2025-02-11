@@ -21,8 +21,8 @@ require("lazy").setup({
     branch = "v2.5",
     import = "nvchad.plugins",
   },
-  { "nvchad/volt", lazy = true },
-  { "nvchad/menu", lazy = true },
+  { "nvchad/volt",     lazy = true },
+  { "nvchad/menu",     lazy = true },
   { import = "plugins" },
 }, lazy_config)
 

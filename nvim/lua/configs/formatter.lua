@@ -10,7 +10,7 @@ local M = {
       require("formatter.filetypes.html").prettierd,
     },
     ["*"] = {
-      require("formatter.filetypes.any").remove_trailing_whitespace,
+      -- require("formatter.filetypes.any").remove_trailing_whitespace,
       require("formatter.filetypes.html").prettierd,
     },
   },

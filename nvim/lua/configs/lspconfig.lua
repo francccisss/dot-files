@@ -57,3 +57,17 @@ lspconfig.gopls.setup {
     "gotmpl",
   },
 }
+
+lspconfig.clangd.setup {
+  cmd = { "clangd", "--clang-tidy", "--completion-style=detailed" }, filetypes = {
+  "c",
+  "cpp",
+},
+  capabilities = require('cmp_nvim_lsp').default_capabilities(),
+  on_attach = function(_, bufnr)
+    -- Enable keybinds for LSP (optional)
+    local opts = { noremap = true, silent = true, buffer = bufnr }
+    vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+  end,
+}

@@ -6,7 +6,9 @@ local options = {
     typescript = { "prettierd" },
     javascript = { "prettierd" },
     python = { "black" },
-    json = { "prettierd" }
+    json = { "prettierd" },
+    c = { "clang-format" },
+    cpp = { "clang-format", baseOnStyle = "GNU" },
   },
 
   format_on_save = {
