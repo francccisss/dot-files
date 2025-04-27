@@ -1,13 +1,12 @@
--- load defaults i.e lua_lsp
+-- Load NvChad's default LSP config
 require("nvchad.configs.lspconfig").defaults()
 
 local lspconfig = require "lspconfig"
-
--- EXAMPLE
-local servers = { "html", "cssls" }
 local nvlsp = require "nvchad.configs.lspconfig"
 
--- lsps with default config
+-- LSPs with default config
+local servers = { "html", "cssls" }
+
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
     on_attach = nvlsp.on_attach,
@@ -16,9 +15,7 @@ for _, lsp in ipairs(servers) do
   }
 end
 
--- typescript
-lspconfig.ts_ls.setup {}
-
+-- Deno
 lspconfig.denols.setup {
   root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
   init_options = {
@@ -28,12 +25,20 @@ lspconfig.denols.setup {
   },
 }
 
+-- TypeScript
 lspconfig.ts_ls.setup {
   root_dir = lspconfig.util.root_pattern "package.json",
   single_file_support = false,
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
 }
 
+-- Python
 lspconfig.pyright.setup {
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
   settings = {
     python = {
       analysis = {
@@ -46,26 +51,21 @@ lspconfig.pyright.setup {
   },
 }
 
+-- Go
 lspconfig.gopls.setup {
-  cmd = {
-    "gopls",
-  },
-  filetypes = {
-    "go",
-    "gomod",
-    "gowork",
-    "gotmpl",
-  },
+  on_attach = nvlsp.on_attach,
+  on_init = nvlsp.on_init,
+  capabilities = nvlsp.capabilities,
+  cmd = { "gopls" },
+  filetypes = { "go", "gomod", "gowork", "gotmpl" },
 }
 
+-- C / C++
 lspconfig.clangd.setup {
-  cmd = { "clangd", "--clang-tidy", "--completion-style=detailed" }, filetypes = {
-  "c",
-  "cpp",
-},
-  capabilities = require('cmp_nvim_lsp').default_capabilities(),
+  cmd = { "clangd" },
+  filetypes = { "c", "cpp" },
+  capabilities = require("cmp_nvim_lsp").default_capabilities(),
   on_attach = function(_, bufnr)
-    -- Enable keybinds for LSP (optional)
     local opts = { noremap = true, silent = true, buffer = bufnr }
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
     vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
