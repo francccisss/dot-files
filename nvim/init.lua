@@ -118,6 +118,9 @@ vim.schedule(function()
   vim.o.clipboard = 'unnamedplus'
 end)
 
+-- permanent color scheme
+-- vim.cmd.colorscheme = 'quiet'
+
 local function search_and_replace_visual()
   local search = vim.fn.input 'Find: '
   if search == '' then
@@ -130,11 +133,51 @@ local function search_and_replace_visual()
   search = vim.fn.escape(search, '/\\^$.*[]')
   -- Run the substitution only on the selected lines with case-insensitive matching (`gi` flag)
   vim.cmd(string.format('%%s/%s/%s/g', search, replace))
+  vim.cmd(string.format('/%s', replace))
   vim.cmd 'nohlsearch'
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'n', false)
 end
 
 -- Map the function to a keybinding in visual mode
+vim.keymap.set('n', '<leader>fr', search_and_replace_visual, { noremap = true, silent = false, desc = '[F]ind [R]eplace' })
+
+local function vterm()
+  vim.cmd 'vsplit'
+  vim.cmd 'term'
+  vim.cmd 'startinsert'
+end
+
+local function hterm()
+  vim.cmd 'split'
+  vim.cmd 'term'
+  vim.cmd 'startinsert'
+end
+
+vim.keymap.set('n', '<leader>tv', vterm, { desc = 'Opens [T]erminal [V]ertically' })
+vim.keymap.set('n', '<leader>tt', hterm, { desc = 'Opens [T]erminal Horizon[T]ally' })
+
+local function new_file()
+  local input = vim.fn.input 'New file name: '
+  if input == '' then
+    error 'enter a file name'
+    return
+  end
+
+  input = vim.fn.escape(input, '/\\^$.*[]')
+  local s = string.sub(input, string.len(input))
+
+  print(input)
+  if s == '/' then
+    vim.cmd(string.format('!mkdir %s', input))
+    print('directory created: %s', input)
+    return
+  end
+  vim.cmd(string.format('!touch %s', input))
+  print('file created: %s', input)
+end
+
+vim.keymap.set('n', '<leader>nf', new_file, { desc = 'Create [N]ew [F]ile' })
+
 vim.keymap.set('n', '<leader>fr', search_and_replace_visual, { noremap = true, silent = false })
 -- Enable break indent
 vim.o.breakindent = true
@@ -200,6 +243,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 --
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
+local function quit_term()
+  vim.cmd 'quit'
+end
+vim.keymap.set('t', '<Esc><Esc>', quit_term, { desc = 'Exit terminal mode' })
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
@@ -435,11 +482,17 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          -- mappings = {
+          --   i = { ['<c-enter>'] = 'to_fuzzy_refine' },
+          -- },
+          pickers = {
+            colorscheme = {
+              enable_preview = true,
+              default = 'quiet',
+            },
+          },
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
@@ -738,6 +791,7 @@ require('lazy').setup({
                 callSnippet = 'Replace',
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
+              diagnostics = { disable = { 'missing-fields' } },
               -- diagnostics = { disable = { 'missing-fields' } },
             },
           },
@@ -934,6 +988,10 @@ require('lazy').setup({
       signature = { enabled = true },
     },
   },
+  {
+    'morhetz/gruvbox',
+    config = function() end,
+  },
 
   -- CHANGE COLOR THEME HERE
   {
@@ -941,7 +999,7 @@ require('lazy').setup({
     priority = 1000,
     config = function()
       require('ayu').setup {
-        transparent_background = false, -- disables setting the background color.
+        transparent_background = true, -- disables setting the background color.
         float = {
           transparent = true, -- enable transparent floating windows
           solid = false, -- use solid styling for floating windows, see |winborder|
@@ -958,7 +1016,7 @@ require('lazy').setup({
           VertSplit = { bg = 'None' },
         },
       }
-      vim.cmd.colorscheme 'ayu'
+      vim.cmd.colorscheme 'lunaperche'
     end,
   },
   {
@@ -968,9 +1026,9 @@ require('lazy').setup({
         theme = 'dragon',
         compile = false,
       }
-      -- vim.cmd.colorscheme 'kanagawa'
     end,
   },
+  -- vim.cmd.colorscheme 'kanagawa'
   {
     'catppuccin/nvim',
     config = function()
@@ -1012,6 +1070,7 @@ require('lazy').setup({
       --  - ci'  - [c]hange [i]nside [']quote
       --
       --mini.move
+      --
       require('mini.move').setup {
         mappings = {
           left = '<C-h>',
